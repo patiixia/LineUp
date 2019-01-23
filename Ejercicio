@@ -1,0 +1,67 @@
+todos!
+
+1) obtain the x and y position of the clicked squared (f3,c4) in your datamodel array as in
+
+//0 red, 1 green, 2 blue
+var squares = [
+	[0, 0, 1, 1],
+	[0, 1, 1, 1],
+	[0, 0, 1, 1]
+]
+
+2) according to the clicked element of the datamodel array, loop through it upwards and downwards
+3) according to the clicked element of the datamodel array, loop through it left and right
+
+var Square = function (type) {
+    if (type === "red") {
+        ctx.fillStyle = "#ff0000"
+    }
+
+    if (type === "blue") {
+        ctx.fillStyle = "#0000ff"
+    }
+
+    ctx.drawRect(10, 10)
+}
+
+var s1 = new Square("red")
+var squares = []
+
+function calculateSquare() {
+    return(Math.floor(Math.random () * 4))
+}
+
+var nGeneratedRows = 0
+var intervalID = setInterval(function () {
+    nGeneratedRows++
+    var row = []
+
+    for (var i = 0 ; i < 10; i++) {
+        row.push(calculateSquare())
+        
+    }
+    
+    console.log("row added!!")
+
+
+    squares.push(row)
+
+    if (nGeneratedRows > 10) {
+        clearInterval(intervalID)
+    }
+}, 1000)
+
+
+//check central element condition
+temp1[1][clickedX] === temp1[1][clickedX - 1] && temp1[1][clickedX] === temp1[1][clickedX + 1]
+
+//check lateral element condition
+temp1[1][clickedX] === temp1[1][clickedX - 2]  && temp1[1][clickedX] === temp1[1][clickedX + 2] 
+
+//check top element condition
+temp1[1][clickedX] === temp1[1][clickedY - 1]  && temp1[1][clickedX] === temp1[1][clickedY + 1] 
+
+//check top element condition
+temp1[1][clickedX] === temp1[1][clickedY - 2]  && temp1[1][clickedX] === temp1[1][clickedY + 2] 
+
+
