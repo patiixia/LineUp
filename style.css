@@ -6,13 +6,13 @@
   border: 0;
   box-shadow: 0;
   border-radius: 5px;
-  margin-bottom: 40px;
   height: 40px;
   width: 100px;
-  margin-left: auto;
-  margin-right: auto;
   display: block;
-  margin-top: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   
 }
 
@@ -39,4 +39,8 @@ canvas {
   overflow-x:hidden;
   overflow-y:hidden;
   background-color: rgb(29, 29, 29);
+}
+
+#game-board {
+  position: relative;
 }
