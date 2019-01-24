@@ -10,6 +10,7 @@ var squares = [
 ]
 
 2) according to the clicked element of the datamodel array, loop through it upwards and downwards
+
 3) according to the clicked element of the datamodel array, loop through it left and right
 
 var Square = function (type) {
@@ -61,7 +62,7 @@ temp1[1][clickedX] === temp1[1][clickedX - 2]  && temp1[1][clickedX] === temp1[1
 //check top element condition
 temp1[1][clickedX] === temp1[1][clickedY - 1]  && temp1[1][clickedX] === temp1[1][clickedY + 1] 
 
-//check top element condition
+//check bottom element condition
 temp1[1][clickedX] === temp1[1][clickedY - 2]  && temp1[1][clickedX] === temp1[1][clickedY + 2] 
 
 

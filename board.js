@@ -19,6 +19,8 @@ Board = {
     this.ctx = this.canvas.getContext("2d")
     this.update()
     this.squareGenerator() 
+    this.position()
+
     
   },
   // Actualiza las filas a medida que avanza el juego. Crea la primera fila, la sube y crea otra aleatoria debajo y así sucesivamente.
@@ -33,7 +35,6 @@ Board = {
       }
       this.drawSquares()
       // los cuadrados se eliminan // detectar los cuadrados que son iguales
-      this.position()
 
     }.bind(this), 16);
   },
@@ -59,7 +60,9 @@ Board = {
   drawSquares: function() {
     this.squaresContainer.forEach(function (rows) {
       rows.forEach(function (square){
-        square.squaresColor()
+        if(square) {
+          square.squaresColor()
+        } 
       })
     }
   )},
@@ -68,7 +71,7 @@ Board = {
   updateRows: function() {
     this.squaresContainer.forEach(function (rows) {
       rows.forEach (function (square) {
-        square.y = square.y-this.squareSize
+        if(square) square.y = square.y-this.squareSize
       }.bind(this))
     }.bind(this))
   },
@@ -79,10 +82,10 @@ Board = {
         this.canvas.addEventListener("click", function(e) {
           for (var i = 0; i < this.squaresContainer.length; i++) {
             for (var j = 0; j < this.squaresContainer[i].length; j++){
-              if (this.squaresContainer[i][j].x < e.layerX && e.layerX < this.squaresContainer[i][j].x+this.squareSize && this.squaresContainer[i][j].y < e.layerY && e.layerY < this.squaresContainer[i][j].y+this.squareSize) {
+              if (this.squaresContainer[i][j] && this.squaresContainer[i][j].x < e.layerX && e.layerX < this.squaresContainer[i][j].x+this.squareSize && this.squaresContainer[i][j].y < e.layerY && e.layerY < this.squaresContainer[i][j].y+this.squareSize) {
                 this.rowClicked = i;
                 this.colClicked = j;
-                //this.checkSquares(this.rowClicked, this.colClicked);
+                this.checkSquares(this.rowClicked, this.colClicked);
                 return;
               }                                                                    
           }
@@ -93,29 +96,29 @@ Board = {
   // Comprueba las posiciones true/false del cuadrado clicado
   squareDelimitation: function (row, col){
     var top, right, bottom, left;
-  if (this.squaresContainer[row-1] != undefined) {
+  if (this.squaresContainer[row-1] != undefined && this.squaresContainer[row-1][col] != null && this.squaresContainer[row]){//null && this.squaresContainer[row]) {
       if (this.squaresContainer[row][col].color[0] == this.squaresContainer[row-1][col].color[0]) {
         top = true
       }
       else {
         top = false
       } 
-} else {
+  } else {
   top = undefined 
 }
 
-if (this.squaresContainer[row+1] != undefined) {
-  if (this.squaresContainer[row][col].color[0] == this.squaresContainer[row+1][col].color[0]) {
-    bottom = true
-  }
-  else {
-    bottom = false
-  } 
+if (this.squaresContainer[row+1] != undefined && this.squaresContainer[row+1][col] != null  && this.squaresContainer[row]) {
+    if (this.squaresContainer[row][col].color[0] == this.squaresContainer[row+1][col].color[0]) {
+      bottom = true
+    }
+    else {
+      bottom = false
+    } 
 } else {
-    bottom = undefined 
+bottom = undefined 
 } 
 
-if (this.squaresContainer[row][col-1] != undefined) {
+if (this.squaresContainer[row][col-1] != undefined && this.squaresContainer[row][col-1] != null && this.squaresContainer[row][col]) {
   if (this.squaresContainer[row][col].color[0] == this.squaresContainer[row][col-1].color[0]) {
     left = true
   }
@@ -126,7 +129,7 @@ if (this.squaresContainer[row][col-1] != undefined) {
     left = undefined 
 } 
 
-if (this.squaresContainer[row][col+1] != undefined) {
+if (this.squaresContainer[row][col+1] != undefined && this.squaresContainer[row][col+1] != null && this.squaresContainer[row][col]) {
   if (this.squaresContainer[row][col].color[0] == this.squaresContainer[row][col+1].color[0]) {
     right = true
   }
@@ -137,7 +140,7 @@ if (this.squaresContainer[row][col+1] != undefined) {
   right = undefined 
 } 
 
-console.log(top, right, bottom, left);
+// console.log(top, right, bottom, left);
 
 return {
   top: top,
@@ -145,81 +148,52 @@ return {
   bottom: bottom,
   left: left
 }
-
-
   },
-
 
   checkSquares: function (row, col) {
-
-
-    //caso base: 4 false/undefined o 3 false/undefined && 1 checked == true 
-    var result4false = Object.values(this.squareDelimitation(row,col)).every(function (e) {
-      return !e
+    var someTrue = Object.values(this.squareDelimitation(row,col)).some(function (e) {
+      return e
     })
 
-    if (result4false || (countFalse(this.squareDelimitation(row, col)) == 3 && this.positionRight(row, col, this.squareDelimitation(row, col)))) {
-      return;
+     //while(someTrue) {
+     var checkTrueArray = checkTrue (this.squareDelimitation(row,col))
+      checkTrueArray.forEach (function (e) {
+        console.log(e);
+        if (e == "top") {
+          // this.removeSquares(row-1, col);
+          this.removeSquares(row, col);
 
-    //else: checkSquares() cambiando row o col a donde sea true
+        } else if (e == "bottom") {
+          // this.removeSquares(row+1, col);
+          this.removeSquares(row, col);
 
-    } else if (this.squareDelimitation(row, col)) {
-      this.checkSquares(row+1, col) 
-    } else if (this.squareDelimitation(row, col)) {
-      this.checkSquares(row-1, col) 
-    } else if (this.squareDelimitation(row, col).col+1) {
-      this.checkSquares(col+1, col) 
-    } else if (this.squareDelimitation(row, col).col-1) {
+        } else if (e == "right") {
+          // this.removeSquares(row, col+1);
+          this.removeSquares(row, col);
 
-    }
+        } else if (e == "left") {
+          // this.removeSquares(row, col-1);
+          this.removeSquares(row, col);
 
+        }
+      }.bind(this))
+      
+      /* someTrue = Object.values(this.squareDelimitation(row,col)).some(function (e) {
+        return e
+      }) */
 
-    //if (this.squareDelimitation(row, col).top) {
-        //this.sameColorContainer.push([rowClicked,colClicked])
-   // }
-
-    //if (this.squareDelimitation(row, col).right) {
-
-    //}
-
-    //if (this.squareDelimitation(row, col).bottom) {
-
-   // } 
-    //if (this.squareDelimitation(row, col).left) {
-
-    //}
-
-
+      //}
   },
 
 
 
-  removeSquares: function (){
-    // Splice method?
-
+  removeSquares: function (row, col){
+    this.squaresContainer[row][col] = null
+    this.downRow(row,col);
     },
-
-    positionRight: function (row, col, obj) {
-      var position = Object.keys(obj)[Object.values(obj).indexOf(true)];
+    downRow: function(row, col) {
       
-      if (position == "top") {
-        return this.squaresContainer[row-1][col].checked
-      }
-
-      if (position == "bottom") {
-        return this.squaresContainer[row+1][col].checked
-      }
-
-      if (position == "right") {
-        return this.squaresContainer[row][col+1].checked
-      }
-
-      if (position == "left") {
-        return this.squaresContainer[row][col-1].checked
-      }
-  
-    }
-
+    },
   }
 
   function countFalse (obj) {
@@ -234,3 +208,10 @@ return {
     return count
   }
 
+  function checkTrue (obj) {
+    return Object.entries(obj).filter(function (e){
+      return e[1] == true
+    }).map(function (e) {
+      return e[0]
+    })
+  }

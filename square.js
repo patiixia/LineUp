@@ -7,7 +7,6 @@ function Squares(ctx, size, x, y) {
   this.width  = size;
   this.x = x;
   this.y = y;
-  this.checked = false;
   
   }
   
