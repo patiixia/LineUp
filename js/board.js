@@ -35,7 +35,7 @@ Board = {
       
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         rowsCounter++;
-        if (rowsCounter % 100 == 0) {
+        if (rowsCounter % 80 == 0) {
           this.rowsGenerator();
         }         
 
