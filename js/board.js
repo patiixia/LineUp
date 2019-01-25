@@ -20,23 +20,29 @@ Board = {
     this.update();
     this.squareGenerator();
     this.position();
+    this.sound = new Audio ("sound/244653__greenvwbeetle__pop-3.flac")
+    this.gameOverImage = new Image();
+    this.gameOverImage.src = "images/gameover-01.jpg"
+
+
+
   },
   // Actualiza las filas a medida que avanza el juego. Crea la primera fila, la sube y crea otra aleatoria debajo y así sucesivamente.
   update: function() {
     var rowsCounter = 0;
     this.intervalID = setInterval(
       function() {
-        //
+      
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         rowsCounter++;
-        if (rowsCounter % 150 == 0) {
+        if (rowsCounter % 100 == 0) {
           this.rowsGenerator();
         }         
-
 
         this.drawSquares();
         this.gameOver();
         this.drawScore();
+
         // los cuadrados se eliminan // detectar los cuadrados que son iguales
       }.bind(this),
       1000/60
@@ -103,6 +109,7 @@ Board = {
               this.rowClicked = i;
               this.colClicked = j;
               this.checkSquares(this.rowClicked, this.colClicked);
+              this.sound.play();
               return;
             }
           }
@@ -230,10 +237,9 @@ Board = {
   },
 
   removeSquares: function(row, col) {
-    this.score += 100;
+    this.score += 25;
     this.squaresContainer[row][col] = null;
     this.downRow(row, col);
-    //score++
   },
   downRow: function(row, col) {
     while (
@@ -253,14 +259,16 @@ Board = {
       return e ? e.y <= 0 : false;
     })){
       clearInterval(this.intervalID)
-      console.log('Game Over')
+      setTimeout(function() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
+
+      }.bind(this), 500)
     }
   },
 
   drawScore: function (){
-   this.ctx.font = "16px Arial";
-   this.ctx.fillStyle = "#0095DD";
-   this.ctx.fillText("Score: "+this.score, 50, 50);
+   document.getElementById("counterDIV").innerHTML = "Score: " + this.score;
   }
 
 };
