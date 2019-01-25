@@ -11,6 +11,7 @@ Board = {
   rowClicked: undefined,
   colClicked: undefined,
   sameColorContainer: [],
+  score: 0,
 
   // El juego empieza a ejecutarse
   start: function(idCanvas) {
@@ -28,14 +29,17 @@ Board = {
         //
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         rowsCounter++;
-        if (rowsCounter % 50 == 0) {
+        if (rowsCounter % 150 == 0) {
           this.rowsGenerator();
-        }
+        }         
+
+
         this.drawSquares();
-        this.gameOver()
+        this.gameOver();
+        this.drawScore();
         // los cuadrados se eliminan // detectar los cuadrados que son iguales
       }.bind(this),
-      16
+      1000/60
     );
   },
 
@@ -83,7 +87,6 @@ Board = {
   },
 
   // Nos indica la posición clicada
-
   position: function() {
     this.canvas.addEventListener(
       "click",
@@ -227,8 +230,10 @@ Board = {
   },
 
   removeSquares: function(row, col) {
+    this.score += 100;
     this.squaresContainer[row][col] = null;
     this.downRow(row, col);
+    //score++
   },
   downRow: function(row, col) {
     while (
@@ -245,15 +250,20 @@ Board = {
 
   gameOver: function () {
     if(this.squaresContainer[0].some(function (e) {
-      return e.y <= 0
+      return e ? e.y <= 0 : false;
     })){
       clearInterval(this.intervalID)
       console.log('Game Over')
     }
+  },
+
+  drawScore: function (){
+   this.ctx.font = "16px Arial";
+   this.ctx.fillStyle = "#0095DD";
+   this.ctx.fillText("Score: "+this.score, 50, 50);
   }
+
 };
-
-
 
 function countFalse(obj) {
   var count = 0;
